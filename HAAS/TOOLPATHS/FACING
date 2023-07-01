@@ -17,7 +17,7 @@ T#tool_number M06  ; Tool change to the specified tool number
 S#spindle_speed M03  ; Spindle speed and spindle on (clockwise rotation)
 
 ; Rapid move to initial position with offset
-G00 X-[#initial_offset] Y-[#initial_offset]
+G00 X-#initial_offset Y-#initial_offset
 
 ; Facing operation with nested loops
 #current_depth = -#cut_depth  ; Start with the first pass depth
@@ -26,9 +26,9 @@ WHILE [#current_depth > -#total_depth] DO  ; Start of depth pass loop
     #current_cut_y = 0.0  ; Current Y cut position variable
 
     WHILE [#current_cut_y < #stock_height] DO  ; Start of Y cut loop
-        G00 Z[#current_depth]  ; Rapid move to the current depth
-        G00 X-[#initial_offset] Y[#current_cut_y + #tool_diameter]  ; Rapid move to the next cut position
-        G01 X[#stock_width + #initial_offset]  ; Move to the right edge of the stock
+        G00 Z#current_depth  ; Rapid move to the current depth
+        G00 X-#initial_offset Y#current_cut_y + #tool_diameter  ; Rapid move to the next cut position
+        G01 X#stock_width + #initial_offset  ; Move to the right edge of the stock
         G00 Z1.0  ; Rapid retract to clearance height
         #current_cut_y = #current_cut_y + #stepover_distance  ; Increment the current Y cut position
     END  ; End of Y cut loop
