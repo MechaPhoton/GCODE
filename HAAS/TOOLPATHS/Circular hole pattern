@@ -1,0 +1,31 @@
+; Circular Hole Pattern Program
+#num_holes = 8  ; Number of holes in the pattern
+#pattern_diameter = 50.0  ; Diameter of the hole pattern
+#hole_depth = 10.0  ; Depth of each hole
+#peck_depth = 2.5  ; Depth of each peck
+#tool_number = 1  ; Tool number for drilling operation
+#feedrate = 100.0  ; Feedrate for drilling operation
+#clearance_height = 1.0  ; Clearance height above the stock
+
+#pi = 3.14159  ; Approximation of pi
+#pi_div_180 = #pi / 180.0  ; Pre-calculate the value of pi divided by 180
+
+#current_angle = 0.0  ; Start with angle set to 0 degrees
+#radius = #pattern_diameter / 2.0  ; Calculate the radius of the pattern
+
+WHILE [#current_angle < 360.0] DO  ; Start of hole pattern loop
+    #angle_in_radians = #current_angle * #pi_div_180  ; Convert angle to radians
+
+    #hole_x = #radius * #cos(#angle_in_radians)  ; Calculate X position of the hole
+    #hole_y = #radius * #sin(#angle_in_radians)  ; Calculate Y position of the hole
+
+    G00 Z[#clearance_height]  ; Rapid move to clearance height
+    G00 X[#hole_x] Y[#hole_y]  ; Rapid move to the hole position
+
+    G83 Z-[#hole_depth] Q-[#peck_depth] R[#clearance_height] F[#feedrate]  ; Peck drilling cycle
+
+    #current_angle = #current_angle + (360.0 / #num_holes)  ; Increment the angle for the next hole
+END  ; End of hole pattern loop
+
+M05  ; Spindle off
+M30  ; Program end
