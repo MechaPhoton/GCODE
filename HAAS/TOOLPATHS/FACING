@@ -1,0 +1,44 @@
+; Parametric facing operation
+#stock_width = 100.0  ; Width of the stock
+#stock_height = 50.0  ; Height of the stock
+#cut_depth = 5.0  ; Depth of each pass
+#total_depth = 20.0  ; Total depth of the facing cut (positive value)
+#tool_diameter = 10.0  ; Diameter of the tool
+#stepover = 0.5  ; Stepover as a value between 0 and 1 (representing a percentage of tool_diameter)
+#feedrate = 200.0  ; Feedrate for the facing operation
+#spindle_speed = 3000  ; Spindle speed in RPM
+#tool_number = 1  ; Tool number for tool change
+
+#initial_offset = 1.25 * #tool_diameter  ; Calculate the initial offset as 125% of the tool diameter
+#stepover_distance = #stepover * #tool_diameter  ; Calculate the actual stepover distance based on the percentage
+
+G00 G90 G54 G40  ; Rapid move, absolute mode, coordinate system selection, cutter radius compensation off
+T#tool_number M06  ; Tool change to the specified tool number
+S#spindle_speed M03  ; Spindle speed and spindle on (clockwise rotation)
+
+; Rapid move to initial position with offset
+G00 X-[#initial_offset] Y-[#initial_offset]
+
+; Facing operation with nested loops
+#current_depth = -#cut_depth  ; Start with the first pass depth
+
+WHILE [#current_depth > -#total_depth] DO  ; Start of depth pass loop
+    #current_cut_y = 0.0  ; Current Y cut position variable
+
+    WHILE [#current_cut_y < #stock_height] DO  ; Start of Y cut loop
+        G00 Z[#current_depth]  ; Rapid move to the current depth
+        G00 X-[#initial_offset] Y[#current_cut_y + #tool_diameter]  ; Rapid move to the next cut position
+        G01 X[#stock_width + #initial_offset]  ; Move to the right edge of the stock
+        G00 Z1.0  ; Rapid retract to clearance height
+        #current_cut_y = #current_cut_y + #stepover_distance  ; Increment the current Y cut position
+    END  ; End of Y cut loop
+
+    #current_depth = #current_depth - #cut_depth  ; Decrement the current depth
+END  ; End of depth pass loop
+
+; Return to home position
+G00 Z1.0  ; Rapid retract to clearance height
+G00 X0.0 Y0.0  ; Rapid move to home position
+
+M05  ; Spindle off
+M30  ; Program end
