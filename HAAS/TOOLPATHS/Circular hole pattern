@@ -19,10 +19,10 @@ WHILE [#current_angle < 360.0] DO  ; Start of hole pattern loop
     #hole_x = #radius * #cos(#angle_in_radians)  ; Calculate X position of the hole
     #hole_y = #radius * #sin(#angle_in_radians)  ; Calculate Y position of the hole
 
-    G00 Z[#clearance_height]  ; Rapid move to clearance height
-    G00 X[#hole_x] Y[#hole_y]  ; Rapid move to the hole position
+    G00 Z#clearance_height  ; Rapid move to clearance height
+    G00 X#hole_x Y#hole_y  ; Rapid move to the hole position
 
-    G83 Z-[#hole_depth] Q-[#peck_depth] R[#clearance_height] F[#feedrate]  ; Peck drilling cycle
+    G83 Z-#hole_depth Q-#peck_depth R#clearance_height F#feedrate  ; Peck drilling cycle
 
     #current_angle = #current_angle + (360.0 / #num_holes)  ; Increment the angle for the next hole
 END  ; End of hole pattern loop
