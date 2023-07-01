@@ -16,8 +16,8 @@
 WHILE [#current_angle < 360.0] DO  ; Start of hole pattern loop
     #angle_in_radians = #current_angle * #pi_div_180  ; Convert angle to radians
 
-    #hole_x = #radius * #cos(#angle_in_radians)  ; Calculate X position of the hole
-    #hole_y = #radius * #sin(#angle_in_radians)  ; Calculate Y position of the hole
+    #hole_x = #radius * #cos[#angle_in_radians] ; Calculate X position of the hole
+    #hole_y = #radius * #sin[#angle_in_radians]  ; Calculate Y position of the hole
 
     G00 Z#clearance_height  ; Rapid move to clearance height
     G00 X#hole_x Y#hole_y  ; Rapid move to the hole position
