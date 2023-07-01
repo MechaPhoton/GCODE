@@ -24,7 +24,7 @@ WHILE [#current_angle < 360.0] DO  ; Start of hole pattern loop
 
     G83 Z-#hole_depth Q-#peck_depth R#clearance_height F#feedrate  ; Peck drilling cycle
 
-    #current_angle = #current_angle + (360.0 / #num_holes)  ; Increment the angle for the next hole
+    #current_angle = #current_angle + [360.0 / #num_holes]  ; Increment the angle for the next hole
 END  ; End of hole pattern loop
 
 M05  ; Spindle off
